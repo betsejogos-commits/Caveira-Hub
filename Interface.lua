@@ -299,3 +299,69 @@ end
 -- Avisa o conector e o main.lua que todo o visual transparente premium foi montado
 _G.BlueXInterfaceCarregada = true
 print("➔ [CAVEIRA HUB] Arquivo Interface.lua finalizado e pronto para o boot!")
+
+-- =============================================================================
+-- CAVEIRA HUB - PARTE 6 DE 10: MOTOR DE MOVIMENTAÇÃO LINEAR E NOCLIP (TWEEN ENGINE)
+-- Cole este bloco logo abaixo do final da Parte 5 no seu arquivo main.lua
+-- =============================================================================
+
+-- Cria uma peça invisível de ancoragem física na Workspace para estabilização
+local anchorBlock = Instance.new("Part", workspace)
+anchorBlock.Size = Vector3.new(1, 1, 1)
+anchorBlock.Name = "CaveiraAnchorPart"
+anchorBlock.Anchored = true
+anchorBlock.CanCollide = false
+anchorBlock.Transparency = 1
+
+-- Gerenciador de voo linear suave baseado em cálculo de vetores tridimensionais
+local function ExecutarTweenPara(destinoCFrame)
+    local character = LocalPlayer.Character
+    local rootPart = character and character:FindFirstChild("HumanoidRootPart")
+    
+    -- Aborta a locomoção se o personagem não estiver instanciado na memória
+    if not rootPart then return end
+    
+    -- Calcula a distância matemática exata em studs até o destino final
+    local distance = (destinoCFrame.Position - rootPart.Position).Magnitude
+    
+    -- Divide a distância pela velocidade para obter o tempo perfeito da viagem
+    local tempoVoo = distance / _G.TweenSpeed
+    
+    -- Configura o TweenService com estilo Linear clássico anti-detecção
+    local tweenInfo = TweenInfo.new(tempoVoo, Enum.EasingStyle.Linear)
+    local tween = TweenService:Create(anchorBlock, tweenInfo, {CFrame = destinoCFrame})
+    
+    -- Sincroniza a peça de ancoragem com a posição inicial do jogador
+    anchorBlock.CFrame = rootPart.CFrame
+    tween:Play()
+    
+    -- Thread assíncrona temporária que prende as coordenadas do jogador à peça móvel
+    task.spawn(function()
+        while tween.PlaybackState == Enum.PlaybackState.Playing do
+            -- Se todas as funções principais forem desligadas, cancela o voo no ar
+            if not _G.AutoFarm and not _G.AutoChest and not _G.AutoRaid then 
+                tween:Cancel() 
+                break 
+            end
+            
+            -- Prende o CFrame do jogador frame a milissegundo na peça invisível
+            rootPart.CFrame = anchorBlock.CFrame
+            task.wait(0.01)
+        end
+    end)
+end
+
+-- Exporta o motor local para que os loops de farm externos consigam chamá-lo
+_G.ExecutarTweenParaGlobal = ExecutarTweenPara
+
+-- Loop contínuo de NoClip forçado via Stepped (Evita morrer esmagado em blocos)
+RunService.Stepped:Connect(function()
+    if _G.NoClip and LocalPlayer.Character then
+        for _, part in pairs(LocalPlayer.Character:GetChildren()) do 
+            if part:IsA("BasePart") then 
+                part.CanCollide = false 
+            end 
+        end
+    end
+end)
+
