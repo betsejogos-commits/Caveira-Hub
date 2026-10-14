@@ -1,68 +1,65 @@
 -- =============================================================================
--- BLUE X HUB - GITHUB_CONECTION.LUA (CONECTOR E INJETOR PRINCIPAL)
--- Cole este código dentro do arquivo GithubConection.lua no seu repositório.
+-- BLUE X HUB - GITHUB_CONECTION.LUA (CONECTOR E INJETOR PRINCIPAL ATUALIZADO)
+-- Cole este código exatamente dentro do seu arquivo GithubConection.lua
 -- =============================================================================
 
 repeat task.wait() until game:IsLoaded() and game.Players.LocalPlayer
 task.wait(0.5)
 
-print("➔ [BLUE X HUB] Iniciando conexão segura com o GitHub...")
+print("➔ [BLUE X HUB] Iniciando conexao segura com o GitHub...")
 
--- 1. LINKS CONFIGURÁVEIS (Troque pelos seus links RAW reais do GitHub)
--- Dica: Vá no seu GitHub pelo celular, clique em 'main.lua' e 'Interface.lua', 
--- clique nos 3 pontinhos, escolha 'View Raw' e copie o link do navegador.
-local LINK_INTERFACE = "https://githubusercontent.com"
-local LINK_COMBATE   = "https://githubusercontent.com"
+-- Links RAW atualizados do seu repositório Caveira-Hub
+local LINK_INTERFACE = "https://raw.githubusercontent.com/betsejogos-commits/Caveira-Hub/refs/heads/main/Interface.lua"
+local LINK_COMBATE   = "https://raw.githubusercontent.com/betsejogos-commits/Caveira-Hub/refs/heads/main/main.lua"
 
 -- =============================================================================
--- 2. CARREGAMENTO DO MÓDULO 1: INTERFACE GRÁFICA TRANSPARENTE
+-- 1. CARREGAMENTO DO MÓDULO VISUAL: INTERFACE.LUA
 -- =============================================================================
 local sucessoInterface, erroInterface = pcall(function()
     return loadstring(game:HttpGet(LINK_INTERFACE))()
 end)
 
 if not sucessoInterface then
-    warn("❌ [ERRO] Falha crítica ao baixar a Interface.lua do GitHub: " .. tostring(erroInterface))
+    warn("❌ [ERRO] Falha critica ao baixar a Interface.lua do GitHub: " .. tostring(erroInterface))
     return
 end
 
--- Aguarda a confirmação de que a estrutura visual foi montada com sucesso na memória do jogo
+-- Aguarda a confirmacao de segurança de que a interface carregou totalmente
 repeat task.wait(0.1) until _G.BlueXInterfaceCarregada == true
 
 -- =============================================================================
--- 3. CARREGAMENTO DO MÓDULO 2: LOGICA DE COMBATE & FARM PARA SKYPIEA 3
+-- 2. CARREGAMENTO DO MÓDULO PESADO: MAIN.LUA (COMBATE & REDIRECIONAMENTO)
 -- =============================================================================
 local sucessoCombate, erroCombate = pcall(function()
     return loadstring(game:HttpGet(LINK_COMBATE))()
 end)
 
 if not sucessoCombate then
-    warn("❌ [ERRO] Falha crítica ao baixar o main.lua do GitHub: " .. tostring(erroCombate))
+    warn("❌ [ERRO] Falha critica ao baixar o main.lua do GitHub: " .. tostring(erroCombate))
     return
 end
 
 -- =============================================================================
--- 4. VINCULAÇÃO E MONTAGEM DAS ABAS DO PAINEL DE DEMONSTRAÇÃO
+-- 3. MONTAGEM AUTOMÁTICA DAS ABAS E VINCULAÇÃO DE INTERRUPTORES (TOGGLES)
 -- =============================================================================
--- Aqui o script junta os botões visuais do Interface.lua com os motores do main.lua
 pcall(function()
-    -- Criando as Abas Laterais na Sidebar transparente
+    -- Gera as abas no menu lateral esquerdo da sua janela transparente
     local FarmTab   = _G.BlueXInterface:CriarAba("Farm Principal")
     local RaidTab   = _G.BlueXInterface:CriarAba("Dungeon Raid")
     local CombatTab = _G.BlueXInterface:CriarAba("Combat PVP")
 
-    -- Montando os Toggles internos da Aba de Farm
-    FarmTab:CriarSecao("Configurações de Level")
+    -- Elementos visuais da aba de Farm (Skypiea 3 Forçado e Baús)
+    FarmTab:CriarSecao("Configuracoes de Level")
     
-    FarmTab:CriarToggle("Auto Farm Level (Skypiea 3 Forçado)", "AutoFarm", function(estado)
+    FarmTab:CriarToggle("Auto Farm Level (Skypiea 3 Forcado)", "AutoFarm", function(estado)
         print("➔ [STATUS] Auto Farm Level definido como: ", estado)
     end)
 
-    FarmTab:CriarToggle("Ataque Rápido [M1 NoCooldown]", "Seriality", function(estado)
+    FarmTab:CriarToggle("Ataque Rapido [M1 NoCooldown]", "Seriality", function(estado)
         print("➔ [STATUS] No Cooldown definido como: ", estado)
     end)
 
-    FarmTab:CriarToggle("Auto Chest [◇ Coleta Baús ◇]", "AutoChest", function(estado)
+    FarmTab:CriarToggle("Auto Chest [◇ Coleta Baus ◇]", "AutoChest", function(estado)
         print("➔ [STATUS] Auto Chest definido como: ", estado)
     end)
 
@@ -74,15 +71,15 @@ pcall(function()
         end
     end)
 
-    -- Montando os Toggles internos da Aba de Raids / Dungeon
+    -- Elementos visuais da aba de Dungeons e Raids
     RaidTab:CriarSecao("Coordenador de Dungeon")
     
     RaidTab:CriarToggle("Auto Raid Dungeon Event", "AutoRaid", function(estado)
         print("➔ [STATUS] Auto Raid definido como: ", estado)
     end)
     
-    -- Montando os Toggles internos da Aba de Combate / PVP
-    CombatTab:CriarSecao("Trava e Auxílio PVP")
+    -- Elementos visuais da aba de Trava PVP e Utilidades extras
+    CombatTab:CriarSecao("Trava e Auxilio PVP")
     
     CombatTab:CriarToggle("Aimbot Habilidades Trava PVP", "AimBotPVP", function(estado)
         print("➔ [STATUS] AimBot PVP definido como: ", estado)
@@ -93,8 +90,8 @@ pcall(function()
     end)
 
     CombatTab:CriarToggle("Auto Roll Fruit (Gacha Gira)", "AutoRoll", function(estado)
-        print("➔ [STATUS] Gacha Automático definido como: ", estado)
+        print("➔ [STATUS] Gacha Automático definido como: ", estado)
     end)
 end)
 
-print("➔ [BLUE X HUB] Sincronização completa! Todos os módulos estão ativos e integrados.")
+print("➔ [BLUE X HUB] Sincronizacao completa! Os codigos do GitHub estao integrados.")
