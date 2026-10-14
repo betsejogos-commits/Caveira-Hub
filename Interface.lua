@@ -1,5 +1,5 @@
 -- =============================================================================
--- MASTER HUB - INTERFACE.LUA (PARTE 1 DE 3: JANELA BASE E DRAGGABLE SYSTEM)
+-- MASTER HUB - INTERFACE.LUA (PARTE 1 DE 3: JANELA BASE E FIX RESETONSPAWN)
 -- Cole este bloco no início do seu arquivo Interface.lua no GitHub
 -- =============================================================================
 
@@ -13,13 +13,13 @@ local PlayerGui = LocalPlayer:WaitForChild("PlayerGui")
 
 _G.MasterHubUI = {}
 
--- Criando a tela do cheat (ScreenGui) com proteção visual e ResetOnSpawn desativado
+-- Criando a tela principal do cheat (ScreenGui)
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MasterHubOfficialUI"
-screenGui.ResetOnSpawn = false -- Evita que a interface suma quando você reseta ou morre
+screenGui.ResetOnSpawn = false -- [CORRIGIDO] A interface NÃO some ao resetar/morrer!
 screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
 
--- Injeta na CoreGui para esconder dos prints e gravações de tela
+-- Injeta na CoreGui para esconder de prints e gravadores, se falhar usa PlayerGui
 pcall(function()
     screenGui.Parent = CoreGui
 end)
@@ -32,7 +32,7 @@ local mainFrame = Instance.new("Frame")
 mainFrame.Name = "MainFrame"
 mainFrame.Size = UDim2.new(0, 540, 0, 360)
 mainFrame.Position = UDim2.new(0.5, -270, 0.5, -180)
-mainFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 28) -- Tom escuro idêntico ao print
+mainFrame.BackgroundColor3 = Color3.fromRGB(24, 24, 28) -- Tom cinza escuro idêntico ao print
 mainFrame.BorderSizePixel = 0
 mainFrame.Active = true
 mainFrame.Parent = screenGui
@@ -91,21 +91,16 @@ UserInputService.InputChanged:Connect(function(input)
 end)
 
 -- =============================================================================
--- MASTER HUB - INTERFACE.LUA (PARTE 2 DE 3: SIDEBAR, PÁGINAS E FIX RESETONSPAWN)
+-- MASTER HUB - INTERFACE.LUA (PARTE 2 DE 3: SIDEBAR E SISTEMA DE ABAS)
 -- Cole este bloco logo abaixo do final da Parte 1 no seu arquivo.
 -- =============================================================================
-
--- TRAVA DE SEGURANÇA DEFINITIVA: Garante que a interface continue na tela após o reset
-pcall(function()
-    screenGui.ResetOnSpawn = false
-end)
 
 -- CONTAINER DA SIDEBAR LATERAL (MENU ESQUERDO)
 local sidebar = Instance.new("Frame", mainFrame)
 sidebar.Name = "Sidebar"
 sidebar.Size = UDim2.new(0, 150, 1, -38)
 sidebar.Position = UDim2.new(0, 0, 0, 38)
-sidebar.BackgroundColor3 = Color3.fromRGB(18, 18, 22) -- Fundo mais escuro para a barra lateral
+sidebar.BackgroundColor3 = Color3.fromRGB(18, 18, 22) -- Tom cinza escuro idêntico ao print
 sidebar.BorderSizePixel = 0
 
 local sidebarLayout = Instance.new("UIListLayout", sidebar)
@@ -128,7 +123,7 @@ pagesFolder.Name = "Pages"
 
 local primeiraPagina = true
 
--- FUNÇÃO EXTIENSA PARA CRIAR ABAS DO MASTER HUB (Exportada globalmente)
+-- FUNÇÃO EXTENSA PARA CRIAR ABAS DO MASTER HUB (Exportada globalmente)
 function _G.MasterHubUI:CriarAba(nomeAba)
     local tabButton = Instance.new("TextButton", sidebar)
     tabButton.Name = nomeAba .. "_Btn"
@@ -141,7 +136,7 @@ function _G.MasterHubUI:CriarAba(nomeAba)
     tabButton.TextSize = 13
     Instance.new("UICorner", tabButton).CornerRadius = UDim.new(0, 4)
 
-    -- Criando a página rolável fina sob medida para mobile
+    -- Criando a página rolável fina sob medida para dispositivos mobile
     local pageFrame = Instance.new("ScrollingFrame", pagesFolder)
     pageFrame.Name = nomeAba .. "_Page"
     pageFrame.Size = UDim2.new(1, 0, 1, 0)
@@ -163,7 +158,7 @@ function _G.MasterHubUI:CriarAba(nomeAba)
     -- Abre a primeira aba criada na tela automaticamente como padrão
     if primeiraPagina then
         pageFrame.Visible = true
-        tabButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255) -- Cor azul de seleção idêntica ao print
+        tabButton.BackgroundColor3 = Color3.fromRGB(0, 150, 255) -- Azul de seleção idêntico à imagem
         tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
         primeiraPagina = false
     end
@@ -187,7 +182,7 @@ function _G.MasterHubUI:CriarAba(nomeAba)
     local subMetodos = {}
 
     -- =============================================================================
-    -- MASTER HUB - INTERFACE.LUA (PARTE 3 DE 3: CONSTRUTORES DE TOGGLES E FINISHED)
+    -- MASTER HUB - INTERFACE.LUA (PARTE 3 DE 3: CONSTRUTORES GERAIS E CONCLUSÃO)
     -- Cole este bloco logo abaixo do final da Parte 2 para fechar o arquivo.
     -- =============================================================================
 
@@ -207,7 +202,7 @@ function _G.MasterHubUI:CriarAba(nomeAba)
     function subMetodos:CriarToggle(tituloToggle, configGlobal, callback)
         local toggleFrame = Instance.new("Frame", pageFrame)
         toggleFrame.Size = UDim2.new(1, 0, 0, 40)
-        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35) -- Fundo cinza esmeralda suave
+        toggleFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 35) -- Fundo cinza suave
         toggleFrame.BackgroundTransparency = 0.3
         Instance.new("UICorner", toggleFrame).CornerRadius = UDim.new(0, 6)
 
@@ -281,6 +276,6 @@ function _G.MasterHubUI:CriarAba(nomeAba)
     return subMetodos
 end
 
--- Ativa o sinalizador na memória global do jogo para o main.lua prosseguir com o boot
+-- Ativa o sinalizador na memória global do jogo para o conector saber que está tudo pronto
 _G.BlueXInterfaceCarregada = true
 print("➔ [MASTER HUB] Interface.lua finalizada com ResetOnSpawn corrigido!")
